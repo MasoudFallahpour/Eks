@@ -3,7 +3,6 @@ package ir.fallahpoor.eks.libraries.ui
 import android.content.Context
 import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import com.google.common.truth.Truth
 import ir.fallahpoor.eks.data.SortOrder
 import ir.fallahpoor.eks.libraries.ui.robots.SortOrderDialogRobot
@@ -58,7 +57,7 @@ class SortOrderDialogTest {
         sortOrderDialogRobot.composeSortOrderDialog(onDismiss = onDismiss)
 
         // When
-        Espresso.pressBack()
+        sortOrderDialogRobot.dismissDialog()
 
         // Then
         Truth.assertThat(callbackCalled).isTrue()
