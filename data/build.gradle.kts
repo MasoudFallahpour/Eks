@@ -13,7 +13,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         ksp {
-            arg("room.schemaLocation", "$projectDir/schemas".toString())
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
     }
 

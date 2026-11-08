@@ -8,9 +8,6 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.ReadOnlyComposable
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -22,12 +19,11 @@ data class Spacing(
     val normal: Dp = 16.dp
 )
 
-private val LocalSpacing = compositionLocalOf { Spacing() }
+private val DefaultSpacing = Spacing()
 
+@Suppress("UnusedReceiverParameter")
 val MaterialTheme.spacing: Spacing
-    @Composable
-    @ReadOnlyComposable
-    get() = LocalSpacing.current
+    get() = DefaultSpacing
 
 private val DarkColorScheme = darkColorScheme(
     primary = Orange,
@@ -64,11 +60,9 @@ fun EksTheme(
         else -> LightColorScheme
     }
 
-    CompositionLocalProvider(LocalSpacing provides Spacing()) {
-        MaterialTheme(
-            colorScheme = colorScheme,
-            typography = Typography,
-            content = content
-        )
-    }
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
 }

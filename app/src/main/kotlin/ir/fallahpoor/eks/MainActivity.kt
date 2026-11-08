@@ -1,13 +1,13 @@
 package ir.fallahpoor.eks
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -41,23 +41,24 @@ class MainActivity : AppCompatActivity() {
                 Eks()
             }
         }
-        if (isPostNotificationsPermissionNotGranted()) {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                showPermissionRationaleDialog()
-            } else {
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPostNotificationsPermissionIfNotGranted()
         }
     }
 
-    private fun isPostNotificationsPermissionNotGranted() =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
-        } else {
-            false
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    private fun requestPostNotificationsPermissionIfNotGranted() {
+        if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            return
         }
+        if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+            showPermissionRationaleDialog()
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 
-    @SuppressLint("InlinedApi")
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun showPermissionRationaleDialog() {
         AlertDialog.Builder(this)
             .setMessage(getString(R.string.notification_permission_rationale_message))
