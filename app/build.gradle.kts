@@ -69,6 +69,9 @@ android {
 
         unitTests {
             isIncludeAndroidResources = true
+            all {
+                it.jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
+            }
         }
     }
 
