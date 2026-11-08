@@ -5,6 +5,10 @@ import androidx.compose.ui.test.assertIsNotSelected
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions.pressBack
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import ir.fallahpoor.eks.R
 import ir.fallahpoor.eks.data.SortOrder
 import ir.fallahpoor.eks.libraries.ui.SortOrderDialog
@@ -48,6 +52,10 @@ class SortOrderDialogRobot(
 
     fun selectSortOrder(sortOrder: SortOrder) {
         composeTestRule.clickOnNodeWithText(context.getString(sortOrder.stringResId))
+    }
+
+    fun dismissDialog() {
+        Espresso.onView(isRoot()).inRoot(isDialog()).perform(pressBack())
     }
 
 }
