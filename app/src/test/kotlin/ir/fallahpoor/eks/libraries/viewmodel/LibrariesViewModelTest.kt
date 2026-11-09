@@ -12,6 +12,7 @@ import ir.fallahpoor.eks.data.repository.model.Library
 import ir.fallahpoor.eks.libraries.ui.LibrariesScreenUiState
 import ir.fallahpoor.eks.libraries.ui.LibrariesState
 import ir.fallahpoor.eks.libraries.viewmodel.exceptionparser.FakeExceptionParser
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -261,7 +262,7 @@ class LibrariesViewModelTest {
         return LibrariesScreenUiState(
             sortOrder = sortOrder,
             searchQuery = searchQuery,
-            librariesState = LibrariesState.Success(libraries)
+            librariesState = LibrariesState.Success(libraries.toImmutableList())
         )
     }
 

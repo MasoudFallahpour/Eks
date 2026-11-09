@@ -10,6 +10,7 @@ import ir.fallahpoor.eks.data.repository.storage.StorageRepository
 import ir.fallahpoor.eks.libraries.ui.LibrariesScreenUiState
 import ir.fallahpoor.eks.libraries.ui.LibrariesState
 import ir.fallahpoor.eks.libraries.viewmodel.exceptionparser.ExceptionParser
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -99,7 +100,7 @@ class LibrariesViewModel
                     searchQuery = _librariesScreenUiState.value.searchQuery
                 )
             }.onSuccess { libraries ->
-                val librariesState = LibrariesState.Success(libraries)
+                val librariesState = LibrariesState.Success(libraries.toImmutableList())
                 _librariesScreenUiState.update {
                     it.copy(librariesState = librariesState)
                 }

@@ -25,7 +25,7 @@ import ir.fallahpoor.eks.data.repository.model.Library
 import ir.fallahpoor.eks.data.repository.model.Version
 import ir.fallahpoor.eks.theme.EksTheme
 import ir.fallahpoor.eks.theme.spacing
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 object LibrariesContentTags {
     const val PROGRESS_INDICATOR = "librariesContentProgressIndicator"
@@ -58,7 +58,7 @@ fun LibrariesContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .testTag(LibrariesContentTags.LIBRARIES_LIST),
-                    libraries = librariesState.libraries.toImmutableList(),
+                    libraries = librariesState.libraries,
                     onLibraryClick = onLibraryClick,
                     onLibraryVersionClick = onLibraryVersionClick,
                     onLibraryPinClick = onLibraryPinClick
@@ -163,7 +163,7 @@ private fun LibrariesContentPreview(
 private fun LibrariesContentSuccessStatePreview() {
     LibrariesContentPreview(
         librariesState = LibrariesState.Success(
-            libraries = listOf(
+            libraries = persistentListOf(
                 Library(
                     name = "Library 1",
                     description = "Description 1",
