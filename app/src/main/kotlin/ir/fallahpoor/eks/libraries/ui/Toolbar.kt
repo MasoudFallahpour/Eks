@@ -54,26 +54,15 @@ fun Toolbar(
             .filter { it != currentSearchQueryProvider() }
             .collect { currentOnSearchQueryChange(it) }
     }
+    var toolbarMode by rememberSaveable { mutableStateOf(ToolbarMode.Normal) }
     TopAppBar(
         modifier = modifier,
         title = {
-            var toolbarMode by rememberSaveable { mutableStateOf(ToolbarMode.Normal) }
-            Box(contentAlignment = Alignment.BottomCenter) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.headlineMedium
-                    )
-                    SortOrderButton(
-                        currentSortOrderProvider = sortOrderProvider,
-                        onSortOrderChange = onSortOrderChange
-                    )
-                    SearchButton(onClick = { toolbarMode = ToolbarMode.Search })
-                }
+            Box(contentAlignment = Alignment.CenterStart) {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.headlineMedium
+                )
                 AnimatedVisibility(visible = toolbarMode == ToolbarMode.Search) {
                     SearchBar(
                         modifier = Modifier.fillMaxWidth(),
@@ -86,6 +75,17 @@ fun Toolbar(
                             searchFieldState.clearText()
                         }
                     )
+                }
+            }
+        },
+        actions = {
+            AnimatedVisibility(visible = toolbarMode == ToolbarMode.Normal) {
+                Row {
+                    SortOrderButton(
+                        currentSortOrderProvider = sortOrderProvider,
+                        onSortOrderChange = onSortOrderChange
+                    )
+                    SearchButton(onClick = { toolbarMode = ToolbarMode.Search })
                 }
             }
         }
