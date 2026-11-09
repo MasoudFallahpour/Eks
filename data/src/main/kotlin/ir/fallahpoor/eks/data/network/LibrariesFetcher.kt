@@ -16,6 +16,10 @@ internal class LibrariesFetcher @Inject constructor() {
     private companion object {
         const val TABLE_COLUMN_COUNT = 6
         const val LIBRARY_BASE_URL = "https://developer.android.com"
+        const val VERSIONS_URL = "$LIBRARY_BASE_URL/jetpack/androidx/versions"
+        val LIBRARY_LINK_REGEX = Regex(
+            """(<td>\s*<a href="[^"]*" data-title=")((?:(?!</td>)[\s\S])*?)(">[^<]*</a>\s*</td>)"""
+        )
     }
 
     private object TableColumnIndex {
@@ -41,13 +45,13 @@ internal class LibrariesFetcher @Inject constructor() {
     }
 
     suspend fun fetchLibraries(): List<LibraryDto> = withContext(Dispatchers.IO) {
-        val url = "https://developer.android.com/jetpack/androidx/versions"
-        val document: Document = Jsoup.connect(url).get()
-        fetchLibraries(document)
+        val html: String = Jsoup.connect(VERSIONS_URL).execute().body()
+        parseLibraries(html)
     }
 
-    private fun fetchLibraries(document: Document): List<LibraryDto> {
+    fun parseLibraries(html: String): List<LibraryDto> {
 
+        val document: Document = Jsoup.parse(sanitizeLibraryDescriptions(html), VERSIONS_URL)
         val tableRows: Elements = document.getElementsByTag(HtmlTags.TR)
 
         val libraries: List<LibraryDto> =
@@ -63,6 +67,18 @@ internal class LibrariesFetcher @Inject constructor() {
         return libraries
 
     }
+
+    private fun sanitizeLibraryDescriptions(html: String): String =
+        LIBRARY_LINK_REGEX.replace(html) { match: MatchResult ->
+            val (prefix, description, suffix) = match.destructured
+            prefix + escapeAttributeValue(Jsoup.parse(description).text()) + suffix
+        }
+
+    private fun escapeAttributeValue(value: String): String =
+        value.replace("&", "&amp;")
+            .replace("\"", "&quot;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
 
     private fun extractLibraryInfo(rowData: Elements): LibraryDto {
 
