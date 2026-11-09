@@ -1,10 +1,12 @@
 package ir.fallahpoor.eks.libraries.ui.robots
 
 import android.content.Context
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onNodeWithText
 import ir.fallahpoor.eks.R
 import ir.fallahpoor.eks.data.repository.model.Library
 import ir.fallahpoor.eks.data.repository.model.Version
@@ -57,6 +59,14 @@ class LibraryItemRobot(
                 R.string.version_rc, library.rcVersion.name
             )
         )
+    }
+
+    fun assertRcVersionIsDisabled() {
+        composeTestRule.onNodeWithText(
+            context.getString(
+                R.string.version_rc, library.rcVersion.name
+            )
+        ).assertIsNotEnabled()
     }
 
     fun clickOnPin() {

@@ -87,6 +87,7 @@ class LibraryItemTest {
 
         // Then
         Truth.assertThat(callbackCalled).isFalse()
+        libraryItemRobot.assertRcVersionIsDisabled()
     }
 
     @Test

@@ -223,11 +223,8 @@ private fun RowScope.LibraryVersion(
         modifier = Modifier
             .weight(1f)
             .clickable(
-                onClick = {
-                    if (version.name != Constants.NOT_AVAILABLE) {
-                        onLibraryVersionClick(version)
-                    }
-                }
+                enabled = version.name != Constants.NOT_AVAILABLE,
+                onClick = { onLibraryVersionClick(version) }
             )
             .padding(vertical = MaterialTheme.spacing.small),
         maxLines = 1,
