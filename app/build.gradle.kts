@@ -89,7 +89,6 @@ dependencies {
     implementation(libs.androidx.core)
     implementation(libs.androidx.dataStore.preferences)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.constraintLayout.compose)
     implementation(libs.material)
     implementation(libs.bundles.lifecycle)
     implementation(libs.androidx.room.runtime)
