@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -26,6 +24,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import ir.fallahpoor.eks.R
@@ -136,7 +135,7 @@ private fun ScrollToTopButton(show: Boolean, onClick: () -> Unit) {
             onClick = onClick
         ) {
             Icon(
-                imageVector = Icons.Filled.KeyboardArrowUp,
+                painter = painterResource(R.drawable.ic_keyboard_arrow_up),
                 contentDescription = stringResource(R.string.scroll_to_top)
             )
         }

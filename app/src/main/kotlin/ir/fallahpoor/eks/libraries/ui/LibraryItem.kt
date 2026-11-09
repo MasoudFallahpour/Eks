@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
@@ -169,13 +166,13 @@ private fun ExpandCollapseButton(
     ) {
         if (isExpanded) {
             Icon(
-                imageVector = Icons.Default.KeyboardArrowUp,
+                painter = painterResource(R.drawable.ic_keyboard_arrow_up),
                 tint = MaterialTheme.colorScheme.secondary,
                 contentDescription = stringResource(R.string.collapse_library_description)
             )
         } else {
             Icon(
-                imageVector = Icons.Default.KeyboardArrowDown,
+                painter = painterResource(R.drawable.ic_keyboard_arrow_down),
                 tint = MaterialTheme.colorScheme.secondary,
                 contentDescription = stringResource(R.string.expand_library_description)
             )

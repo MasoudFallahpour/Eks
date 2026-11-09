@@ -6,9 +6,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -24,6 +21,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -83,7 +81,7 @@ private fun CloseButton(onCloseClick: () -> Unit) {
         onClick = onCloseClick
     ) {
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            painter = painterResource(R.drawable.ic_arrow_back),
             contentDescription = stringResource(R.string.close_search_bar)
         )
     }
@@ -134,7 +132,7 @@ private fun ClearButton(onClearClick: () -> Unit) {
         onClick = onClearClick
     ) {
         Icon(
-            imageVector = Icons.Filled.Clear,
+            painter = painterResource(R.drawable.ic_close),
             contentDescription = stringResource(R.string.clear_search_bar)
         )
     }

@@ -44,7 +44,6 @@ androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 androidx-compose-runtime = { module = "androidx.compose.runtime:runtime" }
 androidx-compose-runtime-liveData = { module = "androidx.compose.runtime:runtime-livedata" }
-androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version = "1.7.8" }
 androidx-compose-uiTest-Junit = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-compose-uiTest-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 
