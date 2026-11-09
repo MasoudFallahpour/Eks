@@ -53,6 +53,7 @@ class ToolbarRobot(
     fun clearSearchQuery() {
         clickOnSearchButton()
         composeTestRule.clickOnNodeWithTag(SearchBarTags.CLEAR_BUTTON)
+        composeTestRule.waitForIdle()
     }
 
     fun closeSearchBar() {
@@ -73,6 +74,7 @@ class ToolbarRobot(
         clickOnSearchButton()
         composeTestRule.onNodeWithTag(SearchBarTags.QUERY_TEXT_FIELD)
             .performTextInput(searchQuery)
+        composeTestRule.waitForIdle()
     }
 
 }

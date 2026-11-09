@@ -4,18 +4,17 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,6 +23,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -40,8 +40,7 @@ object SearchBarTags {
 @Composable
 fun SearchBar(
     hint: String,
-    query: String,
-    onQueryChange: (String) -> Unit,
+    state: TextFieldState,
     onQuerySubmit: (String) -> Unit,
     onClearClick: () -> Unit,
     onCloseClick: () -> Unit,
@@ -57,20 +56,12 @@ fun SearchBar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CloseButton(onCloseClick = onCloseClick)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                if (query.isBlank()) {
-                    HintText(hint = hint)
-                }
-                SearchTextField(
-                    query = query,
-                    onQueryChange = onQueryChange,
-                    onQuerySubmit = onQuerySubmit
-                )
-            }
+            SearchTextField(
+                modifier = Modifier.weight(1f),
+                hint = hint,
+                state = state,
+                onQuerySubmit = onQuerySubmit
+            )
             ClearButton(onClearClick = onClearClick)
         }
     }
@@ -83,7 +74,7 @@ private fun CloseButton(onCloseClick: () -> Unit) {
         onClick = onCloseClick
     ) {
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            painter = painterResource(R.drawable.ic_arrow_back),
             contentDescription = stringResource(R.string.close_search_bar)
         )
     }
@@ -91,31 +82,34 @@ private fun CloseButton(onCloseClick: () -> Unit) {
 
 @Composable
 private fun SearchTextField(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    onQuerySubmit: (String) -> Unit
+    hint: String,
+    state: TextFieldState,
+    onQuerySubmit: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val focusRequester = remember { FocusRequester() }
     BasicTextField(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .focusRequester(focusRequester)
             .testTag(SearchBarTags.QUERY_TEXT_FIELD),
-        value = query,
-        onValueChange = onQueryChange,
-        singleLine = true,
+        state = state,
+        lineLimits = TextFieldLineLimits.SingleLine,
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                onQuerySubmit(query)
-            }
-        ),
+        onKeyboardAction = { onQuerySubmit(state.text.toString()) },
         textStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface),
-        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface)
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.onSurface),
+        decorator = { innerTextField ->
+            Box {
+                if (state.text.isBlank()) {
+                    HintText(hint = hint)
+                }
+                innerTextField()
+            }
+        }
     )
-    DisposableEffect(Unit) {
+    LaunchedEffect(Unit) {
         focusRequester.requestFocus()
-        onDispose { }
     }
 }
 
@@ -123,7 +117,9 @@ private fun SearchTextField(
 private fun HintText(hint: String) {
     Text(
         modifier = Modifier.fillMaxWidth(),
-        text = hint
+        text = hint,
+        style = MaterialTheme.typography.bodyMedium,
+        color = MaterialTheme.colorScheme.onSurfaceVariant
     )
 }
 
@@ -134,7 +130,7 @@ private fun ClearButton(onClearClick: () -> Unit) {
         onClick = onClearClick
     ) {
         Icon(
-            imageVector = Icons.Filled.Clear,
+            painter = painterResource(R.drawable.ic_close),
             contentDescription = stringResource(R.string.clear_search_bar)
         )
     }
@@ -159,8 +155,7 @@ private fun SearchBarPreview(query: String) {
             SearchBar(
                 shape = MaterialTheme.shapes.small,
                 hint = "Search",
-                query = query,
-                onQueryChange = {},
+                state = rememberTextFieldState(query),
                 onClearClick = {},
                 onCloseClick = {},
                 onQuerySubmit = {}

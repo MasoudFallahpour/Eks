@@ -1,18 +1,21 @@
 package ir.fallahpoor.eks.libraries.ui
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import ir.fallahpoor.eks.R
 import ir.fallahpoor.eks.data.SortOrder
@@ -44,7 +47,7 @@ private fun SortOrderDialogContent(
     sortOrderProvider: () -> SortOrder,
     onSortOrderClick: (SortOrder) -> Unit
 ) {
-    Column {
+    Column(modifier = Modifier.selectableGroup()) {
         SortOrder.entries.forEach {
             SortOrderItem(
                 text = stringResource(it.stringResId),
@@ -64,13 +67,18 @@ private fun SortOrderItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick),
+            .selectable(
+                selected = isSelected,
+                onClick = onClick,
+                role = Role.RadioButton
+            )
+            .testTag(text),
         verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(
-            modifier = Modifier.testTag(text),
+            modifier = Modifier.minimumInteractiveComponentSize(),
             selected = isSelected,
-            onClick = onClick
+            onClick = null
         )
         Text(text = text)
     }

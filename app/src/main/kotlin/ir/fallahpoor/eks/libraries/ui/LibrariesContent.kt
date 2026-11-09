@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
@@ -19,13 +20,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.constraintlayout.compose.ConstraintLayout
 import ir.fallahpoor.eks.R
 import ir.fallahpoor.eks.data.repository.model.Library
 import ir.fallahpoor.eks.data.repository.model.Version
 import ir.fallahpoor.eks.theme.EksTheme
 import ir.fallahpoor.eks.theme.spacing
-import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 object LibrariesContentTags {
     const val PROGRESS_INDICATOR = "librariesContentProgressIndicator"
@@ -58,7 +58,7 @@ fun LibrariesContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .testTag(LibrariesContentTags.LIBRARIES_LIST),
-                    libraries = librariesState.libraries.toImmutableList(),
+                    libraries = librariesState.libraries,
                     onLibraryClick = onLibraryClick,
                     onLibraryVersionClick = onLibraryVersionClick,
                     onLibraryPinClick = onLibraryPinClick
@@ -100,37 +100,29 @@ private fun RefreshDate(refreshDate: String) {
 
 @Composable
 private fun TryAgain(errorMessage: String, onTryAgainClick: () -> Unit) {
-    ConstraintLayout(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .testTag(LibrariesContentTags.TRY_AGAIN_LAYOUT)
+            .testTag(LibrariesContentTags.TRY_AGAIN_LAYOUT),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val guideline = createGuidelineFromTop(0.5f)
-        val (tryAgainButton, errorMessageText) = createRefs()
         Text(
             modifier = Modifier
-                .padding(MaterialTheme.spacing.normal)
-                .constrainAs(errorMessageText) {
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    bottom.linkTo(guideline)
-                },
+                .weight(1f)
+                .wrapContentHeight(Alignment.Bottom)
+                .padding(MaterialTheme.spacing.normal),
             text = errorMessage,
             textAlign = TextAlign.Center,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis
         )
-        Button(
-            modifier = Modifier
-                .constrainAs(tryAgainButton) {
-                    start.linkTo(parent.start)
-                    end.linkTo(parent.end)
-                    top.linkTo(guideline)
-                }
-                .testTag(LibrariesContentTags.TRY_AGAIN_BUTTON),
-            onClick = onTryAgainClick
-        ) {
-            Text(text = stringResource(R.string.try_again))
+        Box(modifier = Modifier.weight(1f)) {
+            Button(
+                modifier = Modifier.testTag(LibrariesContentTags.TRY_AGAIN_BUTTON),
+                onClick = onTryAgainClick
+            ) {
+                Text(text = stringResource(R.string.try_again))
+            }
         }
     }
 }
@@ -163,7 +155,7 @@ private fun LibrariesContentPreview(
 private fun LibrariesContentSuccessStatePreview() {
     LibrariesContentPreview(
         librariesState = LibrariesState.Success(
-            libraries = listOf(
+            libraries = persistentListOf(
                 Library(
                     name = "Library 1",
                     description = "Description 1",

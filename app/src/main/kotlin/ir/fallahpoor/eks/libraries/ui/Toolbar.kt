@@ -4,8 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -14,10 +14,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -26,6 +29,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import ir.fallahpoor.eks.R
 import ir.fallahpoor.eks.data.SortOrder
 import ir.fallahpoor.eks.theme.EksTheme
+import kotlinx.coroutines.flow.filter
 
 private enum class ToolbarMode {
     Normal,
@@ -42,47 +46,46 @@ fun Toolbar(
     onSearchQuerySubmit: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val searchFieldState = rememberTextFieldState(searchQueryProvider())
+    val currentSearchQueryProvider by rememberUpdatedState(searchQueryProvider)
+    val currentOnSearchQueryChange by rememberUpdatedState(onSearchQueryChange)
+    LaunchedEffect(searchFieldState) {
+        snapshotFlow { searchFieldState.text.toString() }
+            .filter { it != currentSearchQueryProvider() }
+            .collect { currentOnSearchQueryChange(it) }
+    }
+    var toolbarMode by rememberSaveable { mutableStateOf(ToolbarMode.Normal) }
     TopAppBar(
         modifier = modifier,
         title = {
-            var toolbarMode by rememberSaveable { mutableStateOf(ToolbarMode.Normal) }
-            Box(contentAlignment = Alignment.BottomCenter) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        modifier = Modifier.weight(1f),
-                        text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.headlineMedium
+            Box(contentAlignment = Alignment.CenterStart) {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                AnimatedVisibility(visible = toolbarMode == ToolbarMode.Search) {
+                    SearchBar(
+                        modifier = Modifier.fillMaxWidth(),
+                        hint = stringResource(R.string.search),
+                        state = searchFieldState,
+                        onQuerySubmit = onSearchQuerySubmit,
+                        onClearClick = { searchFieldState.clearText() },
+                        onCloseClick = {
+                            toolbarMode = ToolbarMode.Normal
+                            searchFieldState.clearText()
+                        }
                     )
+                }
+            }
+        },
+        actions = {
+            AnimatedVisibility(visible = toolbarMode == ToolbarMode.Normal) {
+                Row {
                     SortOrderButton(
                         currentSortOrderProvider = sortOrderProvider,
                         onSortOrderChange = onSortOrderChange
                     )
                     SearchButton(onClick = { toolbarMode = ToolbarMode.Search })
-                }
-                AnimatedVisibility(visible = toolbarMode == ToolbarMode.Search) {
-                    SearchBar(
-                        modifier = Modifier.fillMaxWidth(),
-                        hint = stringResource(R.string.search),
-                        query = searchQueryProvider(),
-                        onQueryChange = {
-                            onSearchQueryChange(it)
-                        },
-                        onQuerySubmit = onSearchQuerySubmit,
-                        onClearClick = {
-                            if (searchQueryProvider().isNotBlank()) {
-                                onSearchQueryChange("")
-                            }
-                        },
-                        onCloseClick = {
-                            toolbarMode = ToolbarMode.Normal
-                            if (searchQueryProvider().isNotBlank()) {
-                                onSearchQueryChange("")
-                            }
-                        }
-                    )
                 }
             }
         }
@@ -117,7 +120,7 @@ private fun SortOrderButton(
 private fun SearchButton(onClick: () -> Unit) {
     IconButton(onClick = onClick) {
         Icon(
-            imageVector = Icons.Filled.Search,
+            painter = painterResource(R.drawable.ic_search),
             contentDescription = stringResource(R.string.search)
         )
     }

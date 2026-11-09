@@ -8,6 +8,7 @@ import ir.fallahpoor.eks.commontest.TestData
 import ir.fallahpoor.eks.data.repository.model.Library
 import ir.fallahpoor.eks.data.repository.model.Version
 import ir.fallahpoor.eks.libraries.ui.robots.LibrariesContentRobot
+import kotlinx.collections.immutable.persistentListOf
 import org.junit.Rule
 import org.junit.Test
 
@@ -57,7 +58,7 @@ class LibrariesContentTest {
     @Test
     fun when_state_is_SUCCESS_libraries_are_displayed() {
         // Given
-        val libraries = listOf(
+        val libraries = persistentListOf(
             TestData.Activity.old,
             TestData.Biometric.old,
             TestData.core, TestData.preference
@@ -75,7 +76,7 @@ class LibrariesContentTest {
     @Test
     fun when_state_is_SUCCESS_refresh_date_is_displayed() {
         // Given
-        val libraries = listOf(
+        val libraries = persistentListOf(
             TestData.Activity.old,
             TestData.Biometric.old,
             TestData.core,
@@ -94,7 +95,7 @@ class LibrariesContentTest {
     @Test
     fun when_state_is_SUCCESS_progress_indicator_is_not_displayed() {
         // Given
-        val libraries = listOf(
+        val libraries = persistentListOf(
             TestData.Activity.old,
             TestData.Biometric.old,
             TestData.core,
@@ -113,7 +114,7 @@ class LibrariesContentTest {
     @Test
     fun when_state_is_SUCCESS_try_again_is_not_displayed() {
         // Given
-        val libraries = listOf(
+        val libraries = persistentListOf(
             TestData.Activity.old,
             TestData.Biometric.old,
             TestData.core,
@@ -182,7 +183,7 @@ class LibrariesContentTest {
             clickedLibrary = library
         }
         librariesContentRobot.composeLibrariesContent(
-            librariesState = LibrariesState.Success(listOf(library)),
+            librariesState = LibrariesState.Success(persistentListOf(library)),
             onLibraryClick = onLibraryClick
         )
 
@@ -205,7 +206,7 @@ class LibrariesContentTest {
             clickedVersion = version
         }
         librariesContentRobot.composeLibrariesContent(
-            librariesState = LibrariesState.Success(listOf(library)),
+            librariesState = LibrariesState.Success(persistentListOf(library)),
             onLibraryVersionClick = onLibraryVersionClick
         )
 
@@ -230,7 +231,7 @@ class LibrariesContentTest {
             pinnedLibrary = library
         }
         librariesContentRobot.composeLibrariesContent(
-            librariesState = LibrariesState.Success(listOf(library)),
+            librariesState = LibrariesState.Success(persistentListOf(library)),
             onLibraryPinClick = onLibraryPinClick
         )
 
@@ -256,7 +257,7 @@ class LibrariesContentTest {
             unpinnedLibrary = library
         }
         librariesContentRobot.composeLibrariesContent(
-            librariesState = LibrariesState.Success(listOf(library)),
+            librariesState = LibrariesState.Success(persistentListOf(library)),
             onLibraryPinClick = onLibraryPinClick
         )
 

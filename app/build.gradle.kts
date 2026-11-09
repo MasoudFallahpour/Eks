@@ -89,7 +89,6 @@ dependencies {
     implementation(libs.androidx.core)
     implementation(libs.androidx.dataStore.preferences)
     implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.constraintLayout.compose)
     implementation(libs.material)
     implementation(libs.bundles.lifecycle)
     implementation(libs.androidx.room.runtime)
@@ -106,7 +105,6 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.tooling)
     implementation(libs.androidx.compose.material3)
-    implementation(libs.androidx.compose.material.icons.core)
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.runtime.liveData)
 

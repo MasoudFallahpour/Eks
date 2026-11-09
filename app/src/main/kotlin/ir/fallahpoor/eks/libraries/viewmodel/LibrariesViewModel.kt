@@ -10,12 +10,14 @@ import ir.fallahpoor.eks.data.repository.storage.StorageRepository
 import ir.fallahpoor.eks.libraries.ui.LibrariesScreenUiState
 import ir.fallahpoor.eks.libraries.ui.LibrariesState
 import ir.fallahpoor.eks.libraries.viewmodel.exceptionparser.ExceptionParser
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -41,10 +43,16 @@ class LibrariesViewModel
     private val _librariesScreenUiState = MutableStateFlow(
         LibrariesScreenUiState(sortOrder = storageRepository.getSortOrder())
     )
+    private var isInitialLoadStarted = false
     val librariesScreenUiState: StateFlow<LibrariesScreenUiState> = combine(
         _librariesScreenUiState, storageRepository.getRefreshDateAsFlow()
     ) { libraries, refreshDate ->
         libraries.copy(refreshDate = refreshDate)
+    }.onStart {
+        if (!isInitialLoadStarted) {
+            isInitialLoadStarted = true
+            getLibraries()
+        }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -92,7 +100,7 @@ class LibrariesViewModel
                     searchQuery = _librariesScreenUiState.value.searchQuery
                 )
             }.onSuccess { libraries ->
-                val librariesState = LibrariesState.Success(libraries)
+                val librariesState = LibrariesState.Success(libraries.toImmutableList())
                 _librariesScreenUiState.update {
                     it.copy(librariesState = librariesState)
                 }
