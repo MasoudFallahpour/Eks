@@ -1,5 +1,6 @@
 package ir.fallahpoor.eks.libraries.ui
 
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.v2.createComposeRule
@@ -27,7 +28,7 @@ class SearchBarTest {
         // Then
         with(composeTestRule) {
             onNodeWithText(hint, useUnmergedTree = true).assertIsDisplayed()
-            onNodeWithTag(SearchBarTags.QUERY_TEXT_FIELD).assertTextEquals("")
+            onNodeWithTag(SearchBarTags.QUERY_TEXT_FIELD).assertTextEquals(hint, "")
             assertIsDisplayedNodeWithTag(SearchBarTags.CLOSE_BUTTON)
             assertIsDisplayedNodeWithTag(SearchBarTags.CLEAR_BUTTON)
         }
@@ -38,7 +39,7 @@ class SearchBarTest {
         // Given
         val hint = "Enter library name"
         val query = "Coil"
-        searchBarRobot.composeSearchBar(hint = hint, query = query)
+        searchBarRobot.composeSearchBar(hint = hint, state = TextFieldState(query))
 
         // When
 
@@ -79,23 +80,35 @@ class SearchBarTest {
     }
 
     @Test
-    fun when_query_is_changed_correct_callback_is_called() {
+    fun when_query_is_entered_state_is_updated() {
         // Given
-        var callbackCalled = false
-        var searchQuery = ""
-        val onQueryChange: (String) -> Unit = {
-            callbackCalled = true
-            searchQuery = it
-        }
-        searchBarRobot.composeSearchBar(onQueryChange = onQueryChange)
+        val state = TextFieldState()
+        searchBarRobot.composeSearchBar(state = state)
 
         // When
         searchBarRobot.enterSearchQuery("Coroutines")
 
         // Then
-        Truth.assertThat(callbackCalled).isTrue()
-        Truth.assertThat(searchQuery).isEqualTo("Coroutines")
+        Truth.assertThat(state.text.toString()).isEqualTo("Coroutines")
     }
 
-    // TODO Test if the correct callback is called when query is submitted
+    @Test
+    fun when_query_is_submitted_correct_callback_is_called() {
+        // Given
+        var submittedQuery: String? = null
+        val onQuerySubmit: (String) -> Unit = {
+            submittedQuery = it
+        }
+        searchBarRobot.composeSearchBar(
+            state = TextFieldState("Coroutines"),
+            onQuerySubmit = onQuerySubmit
+        )
+
+        // When
+        searchBarRobot.submitSearchQuery()
+
+        // Then
+        Truth.assertThat(submittedQuery).isEqualTo("Coroutines")
+    }
+
 }
