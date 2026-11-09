@@ -111,8 +111,8 @@ private fun LibraryInformation(
 @Composable
 private fun LibraryName(name: String) {
     Surface(
-        color = MaterialTheme.colorScheme.onBackground,
-        contentColor = MaterialTheme.colorScheme.background,
+        color = MaterialTheme.colorScheme.inverseSurface,
+        contentColor = MaterialTheme.colorScheme.inverseOnSurface,
         shape = MaterialTheme.shapes.small
     ) {
         Text(
