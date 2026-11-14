@@ -1,5 +1,7 @@
 package ir.fallahpoor.eks.libraries.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -143,7 +145,8 @@ private fun ScrollToTopButton(show: Boolean, onClick: () -> Unit) {
 }
 
 @Composable
-@Preview(name = "List of libraries is not empty")
+@Preview(name = "With libraries - Light")
+@Preview(name = "With libraries - Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 private fun LibrariesListNonEmptyListPreview() {
     LibrariesListPreview(
         libraries = listOf(
@@ -165,7 +168,8 @@ private fun LibrariesListNonEmptyListPreview() {
 }
 
 @Composable
-@Preview(name = "List of libraries is empty")
+@Preview(name = "No libraries - Light")
+@Preview(name = "No libraries - Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 private fun LibrariesListEmptyListPreview() {
     LibrariesListPreview(libraries = emptyList<Library>().toImmutableList())
 }

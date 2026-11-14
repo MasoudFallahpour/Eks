@@ -1,5 +1,7 @@
 package ir.fallahpoor.eks.libraries.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -25,7 +27,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import ir.fallahpoor.eks.R
 import ir.fallahpoor.eks.data.Constants
 import ir.fallahpoor.eks.data.repository.model.Library
@@ -235,19 +237,44 @@ private fun RowScope.LibraryVersion(
 }
 
 @Composable
-@PreviewLightDark
-private fun LibraryItemPreview() {
+@Preview(name = "Unpinned, long description - Light")
+@Preview(name = "Unpinned, long description - Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
+private fun LibraryItemUnpinnedLongDescriptionPreview() {
+    LibraryItemPreview(
+        library = Library(
+            name = "Room",
+            description = "Create, store, and manage persistent data backed by a SQLite database. Create, store, and manage persistent data backed by a SQLite database.",
+            stableVersion = Version("1.3.1"),
+            rcVersion = Version(),
+            betaVersion = Version("1.5.0-beta05"),
+            alphaVersion = Version("1.6.0-alpha02")
+        )
+    )
+}
+
+@Composable
+@Preview(name = "Pinned, short description - Light")
+@Preview(name = "Pinned, short description - Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
+private fun LibraryItemPinnedShortDescriptionPreview() {
+    LibraryItemPreview(
+        library = Library(
+            name = "Room",
+            description = "Create, store, and manage persistent data backed by a SQLite database.",
+            stableVersion = Version("1.3.1"),
+            rcVersion = Version(),
+            betaVersion = Version("1.5.0-beta05"),
+            alphaVersion = Version("1.6.0-alpha02"),
+            isPinned = true
+        )
+    )
+}
+
+@Composable
+private fun LibraryItemPreview(library: Library) {
     EksTheme {
         Surface {
             LibraryItem(
-                library = Library(
-                    name = "Room",
-                    description = "Create, store, and manage persistent data backed by a SQLite database. Create, store, and manage persistent data backed by a SQLite database.",
-                    stableVersion = Version("1.3.1"),
-                    rcVersion = Version(),
-                    betaVersion = Version("1.5.0-beta05"),
-                    alphaVersion = Version("1.6.0-alpha02")
-                ),
+                library = library,
                 onLibraryClick = {},
                 onLibraryVersionClick = {},
                 onLibraryPinClick = { _, _ -> }

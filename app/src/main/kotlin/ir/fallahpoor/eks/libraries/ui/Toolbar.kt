@@ -1,9 +1,12 @@
 package ir.fallahpoor.eks.libraries.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -25,7 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import ir.fallahpoor.eks.R
 import ir.fallahpoor.eks.data.SortOrder
 import ir.fallahpoor.eks.theme.EksTheme
@@ -55,6 +58,28 @@ fun Toolbar(
             .collect { currentOnSearchQueryChange(it) }
     }
     var toolbarMode by rememberSaveable { mutableStateOf(ToolbarMode.Normal) }
+    Toolbar(
+        modifier = modifier,
+        toolbarMode = toolbarMode,
+        onToolbarModeChange = { toolbarMode = it },
+        searchFieldState = searchFieldState,
+        sortOrderProvider = sortOrderProvider,
+        onSortOrderChange = onSortOrderChange,
+        onSearchQuerySubmit = onSearchQuerySubmit
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun Toolbar(
+    toolbarMode: ToolbarMode,
+    onToolbarModeChange: (ToolbarMode) -> Unit,
+    searchFieldState: TextFieldState,
+    sortOrderProvider: () -> SortOrder,
+    onSortOrderChange: (SortOrder) -> Unit,
+    onSearchQuerySubmit: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     TopAppBar(
         modifier = modifier,
         title = {
@@ -71,7 +96,7 @@ fun Toolbar(
                         onQuerySubmit = onSearchQuerySubmit,
                         onClearClick = { searchFieldState.clearText() },
                         onCloseClick = {
-                            toolbarMode = ToolbarMode.Normal
+                            onToolbarModeChange(ToolbarMode.Normal)
                             searchFieldState.clearText()
                         }
                     )
@@ -85,7 +110,7 @@ fun Toolbar(
                         currentSortOrderProvider = sortOrderProvider,
                         onSortOrderChange = onSortOrderChange
                     )
-                    SearchButton(onClick = { toolbarMode = ToolbarMode.Search })
+                    SearchButton(onClick = { onToolbarModeChange(ToolbarMode.Search) })
                 }
             }
         }
@@ -127,15 +152,29 @@ private fun SearchButton(onClick: () -> Unit) {
 }
 
 @Composable
-@PreviewLightDark
-private fun ToolbarPreview() {
+@Preview(name = "Normal mode - Light")
+@Preview(name = "Normal mode - Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
+private fun ToolbarNormalModePreview() {
+    ToolbarPreview(toolbarMode = ToolbarMode.Normal)
+}
+
+@Composable
+@Preview(name = "Search mode - Light")
+@Preview(name = "Search mode - Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
+private fun ToolbarSearchModePreview() {
+    ToolbarPreview(toolbarMode = ToolbarMode.Search, searchQuery = "Coil")
+}
+
+@Composable
+private fun ToolbarPreview(toolbarMode: ToolbarMode, searchQuery: String = "") {
     EksTheme {
         Surface {
             Toolbar(
+                toolbarMode = toolbarMode,
+                onToolbarModeChange = {},
+                searchFieldState = rememberTextFieldState(searchQuery),
                 sortOrderProvider = { SortOrder.A_TO_Z },
                 onSortOrderChange = {},
-                searchQueryProvider = { "" },
-                onSearchQueryChange = {},
                 onSearchQuerySubmit = {}
             )
         }
