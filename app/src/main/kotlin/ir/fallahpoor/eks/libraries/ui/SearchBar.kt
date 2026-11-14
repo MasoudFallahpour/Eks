@@ -1,5 +1,7 @@
 package ir.fallahpoor.eks.libraries.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +28,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.tooling.preview.Preview
 import ir.fallahpoor.eks.R
 import ir.fallahpoor.eks.theme.EksTheme
 
@@ -137,13 +139,15 @@ private fun ClearButton(onClearClick: () -> Unit) {
 }
 
 @Composable
-@PreviewLightDark
+@Preview(name = "With query - Light")
+@Preview(name = "With query - Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 private fun SearchBarNonEmptyQueryPreview() {
     SearchBarPreview("Coil")
 }
 
 @Composable
-@PreviewLightDark
+@Preview(name = "Empty query - Light")
+@Preview(name = "Empty query - Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 private fun SearchBarEmptyQueryPreview() {
     SearchBarPreview("")
 }

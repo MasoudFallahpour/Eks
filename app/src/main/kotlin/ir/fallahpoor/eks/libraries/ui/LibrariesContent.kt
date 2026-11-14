@@ -1,5 +1,7 @@
 package ir.fallahpoor.eks.libraries.ui
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -151,7 +153,8 @@ private fun LibrariesContentPreview(
 }
 
 @Composable
-@Preview(name = "Success State")
+@Preview(name = "Success - Light")
+@Preview(name = "Success - Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 private fun LibrariesContentSuccessStatePreview() {
     LibrariesContentPreview(
         librariesState = LibrariesState.Success(
@@ -175,7 +178,8 @@ private fun LibrariesContentSuccessStatePreview() {
 }
 
 @Composable
-@Preview(name = "Error State")
+@Preview(name = "Error - Light")
+@Preview(name = "Error - Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 private fun LibrariesContentErrorStatePreview() {
     LibrariesContentPreview(
         librariesState = LibrariesState.Error("An error has occurred.")
@@ -183,7 +187,8 @@ private fun LibrariesContentErrorStatePreview() {
 }
 
 @Composable
-@Preview(name = "Loading State")
+@Preview(name = "Loading - Light")
+@Preview(name = "Loading - Dark", uiMode = UI_MODE_NIGHT_YES or UI_MODE_TYPE_NORMAL)
 private fun LibrariesContentLoadingStatePreview() {
     LibrariesContentPreview(
         librariesState = LibrariesState.Loading
