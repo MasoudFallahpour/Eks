@@ -1,6 +1,6 @@
 # Eks
 
-![Build status](https://github.com/masoudfallahpour/Eks/actions/workflows/build.yml/badge.svg?branch=dev)
+![Build status](https://github.com/masoudfallahpour/Eks/actions/workflows/build.yml/badge.svg?branch=master)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/masoudfallahpour/Eks?label=Latest%20version)
 
 Eks is an Android app that displays the latest version of official AndroidX libraries and
@@ -33,7 +33,7 @@ its tech stack:
 
 # Contributing
 
-Pull requests are welcome! Please make your pull requests against the `dev` branch. If you have a
+Pull requests are welcome! Please make your pull requests against the `master` branch. If you have a
 feature request or bug report, please open a new issue so it could be tracked.
 
 License

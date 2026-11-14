@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Eks is an Android app that shows the latest versions of the official AndroidX libraries and notifies the user when they change. There is no API: the data comes from scraping https://developer.android.com/jetpack/androidx/versions with Jsoup.
 
-PRs target the `dev` branch, which is the default branch. `master` holds releases.
+PRs target `master`, the default and only long-lived branch. A repository ruleset blocks direct pushes to `master`, so every change lands through a PR.
 
 ## Build setup
 
@@ -56,5 +56,6 @@ There are three Gradle modules: `:app` depends on `:data`. `:commonTest` is an A
 
 ## CI / release
 
-- `.github/workflows/build.yml` runs on pushes and PRs to `dev`. It runs `test`, then `connectedCheck` on an API 34 x86_64 emulator, then `build`.
-- `.github/workflows/release.yml` runs **only when a `v*` tag is pushed**. Merging to `master` alone doesn't publish anything. The workflow runs the same tests and `assembleRelease`, then creates a GitHub release that uses `CHANGELOG.md` verbatim as its body. Before tagging, bump `versionCode`/`versionName` in `app/build.gradle.kts` and add the CHANGELOG entry.
+- `.github/workflows/build.yml` runs on PRs to `master`. It first runs `.github/scripts/check-version-bump.sh` on the merge result (below), then runs `test`, then `connectedCheck` on an API 34 x86_64 emulator, then `build`. The ruleset requires this check to pass, and the PR branch to be up to date with `master`, before merging.
+- `.github/workflows/release.yml` runs on every push to `master`, i.e. every merged PR. It runs the same script on the commits before and after the push, and if `versionCode` went up, it builds the signed APK and creates the GitHub release `v<versionName>`, with `Eks-<versionName>.apk` attached and that version's `CHANGELOG.md` section as the body. It does not rerun the tests; the required PR check already ran them on the merge result.
+- To release, bump `versionCode` and `versionName` in `app/build.gradle.kts` and add a `# Version <versionName>` section to `CHANGELOG.md`, all in the same PR. The PR check fails if `versionCode` went down, if `versionName` didn't change along with it, if the CHANGELOG section is missing, or if the tag already exists. A PR that leaves `versionCode` alone releases nothing. Run `.github/scripts/check-version-bump.sh origin/master HEAD` to see locally what CI will decide.
