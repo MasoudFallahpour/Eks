@@ -18,39 +18,7 @@ jobs:
           fetch-depth: 2
 
       - name: Check version bump
-        run: |
-          read_version() {
-            git show "${1}:app/build.gradle.kts" | sed -nE "s/^ *$2 = \"?([^\"]+)\"?$/\1/p"
-          }
-          old_code=$(read_version HEAD^1 versionCode)
-          new_code=$(read_version HEAD versionCode)
-          old_name=$(read_version HEAD^1 versionName)
-          new_name=$(read_version HEAD versionName)
-          if [ -z "$old_code" ] || [ -z "$new_code" ] || [ -z "$old_name" ] || [ -z "$new_name" ]; then
-            echo "::error file=app/build.gradle.kts::Could not read versionCode/versionName"
-            exit 1
-          fi
-          if [ "$new_code" -eq "$old_code" ]; then
-            echo "versionCode unchanged ($new_code). Merging this PR will not create a release."
-            exit 0
-          fi
-          if [ "$new_code" -lt "$old_code" ]; then
-            echo "::error file=app/build.gradle.kts::versionCode decreased from $old_code to $new_code"
-            exit 1
-          fi
-          if [ "$new_name" = "$old_name" ]; then
-            echo "::error file=app/build.gradle.kts::versionCode was bumped but versionName is still $new_name"
-            exit 1
-          fi
-          if ! grep -qxF "# Version $new_name" CHANGELOG.md; then
-            echo "::error file=CHANGELOG.md::CHANGELOG.md has no '# Version $new_name' section"
-            exit 1
-          fi
-          if git ls-remote --exit-code --tags origin "refs/tags/v$new_name" > /dev/null; then
-            echo "::error::Tag v$new_name already exists"
-            exit 1
-          fi
-          echo "Merging this PR will release version $new_name (versionCode $new_code)."
+        run: .github/scripts/check-version-bump.sh HEAD^1 HEAD
 
       - name: Set up JDK
         uses: actions/setup-java@v4

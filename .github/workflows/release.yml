@@ -30,26 +30,7 @@ jobs:
         id: version
         env:
           BEFORE: ${{ github.event.before }}
-        run: |
-          read_version() {
-            git show "${1}:app/build.gradle.kts" | sed -nE "s/^ *$2 = \"?([^\"]+)\"?$/\1/p"
-          }
-          new_code=$(read_version HEAD versionCode)
-          new_name=$(read_version HEAD versionName)
-          echo "version-name=$new_name" >> "$GITHUB_OUTPUT"
-          if ! git cat-file -e "$BEFORE^{commit}" 2>/dev/null; then
-            echo "Previous master commit $BEFORE not found; not releasing."
-            echo "release=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          old_code=$(read_version "$BEFORE" versionCode)
-          if [ "$new_code" -gt "$old_code" ]; then
-            echo "versionCode $old_code -> $new_code: releasing $new_name."
-            echo "release=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "versionCode unchanged ($new_code); not releasing."
-            echo "release=false" >> "$GITHUB_OUTPUT"
-          fi
+        run: .github/scripts/check-version-bump.sh "$BEFORE" HEAD
 
   release:
 
